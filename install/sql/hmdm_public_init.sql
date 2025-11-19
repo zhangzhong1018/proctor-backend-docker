@@ -3799,7 +3799,7 @@ ALTER TABLE "public"."devicestatuses" ADD COLUMN "temperature" numeric;
 ALTER TABLE "public"."devicestatuses" ADD COLUMN "create_time" int8;
 
 ALTER TABLE "public"."users" ADD COLUMN "createtime" int8;
-ALTER TABLE "public"."users" ADD COLUMN "logintime" int8
+ALTER TABLE "public"."users" ADD COLUMN "logintime" int8;
 
 ALTER TABLE "public"."userrolesettings" ADD COLUMN "columndisplayeddevicemode" bool;
 
