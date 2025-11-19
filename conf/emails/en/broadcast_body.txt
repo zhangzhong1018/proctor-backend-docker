@@ -1,0 +1,11 @@
+Hi,<br/>
+<br/>
+Your are invited to attend a broadcast meeting as ${user}.<br/>
+<br/>
+Subject: ${subject}<br/>
+Start Time: ${time}<br/>
+<br/>
+Click the link to join the meeting directly:<br/>
+${url}<br/>
+<br/>
+Best Regards!

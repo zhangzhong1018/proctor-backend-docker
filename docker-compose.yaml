@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+
+  # PostgreSQL 服务
+  postgresql:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${SQL_USER}
+      POSTGRES_PASSWORD: ${SQL_PASS}
+      POSTGRES_DB: ${SQL_BASE}
+    volumes:
+      - ./volumes/db:/var/lib/postgresql/data
+      - ./install/sql/hmdm_public_init.sql:/docker-entrypoint-initdb.d/hmdm_public_init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+  # Redis 服务
+  redis:
+    image: redis:7.0.5
+    container_name: redis
+    networks:
+      - app-network
+    restart: unless-stopped
+    command: redis-server /etc/redis/redis.conf --requirepass ${REDIS_PASS} --appendonly no
+    environment:
+      TZ: Asia/Shanghai
+      LANG: en_US.UTF-8
+    volumes:
+      - "./redis/data:/data"
+      - "./redis/config/redis.conf:/etc/redis/redis.conf"
+    ports:
+      - "6379:6379"
+
+  # Tomcat 应用服务
+  webapp:
+    image: zli1018/proctor-backend:latest
+    container_name: proctor-backend
+    depends_on:
+      postgresql:
+        condition: service_started
+      redis:
+        condition: service_started
+    ports:
+      - "8088:8080"
+      - "8443:8443"
+      - "31000:31000"
+    volumes:
+      - ./files:/usr/local/tomcat/work/files
+      - ./conf:/usr/local/tomcat/conf
+      - ./app-logs:/usr/local/tomcat/logs
+    networks:
+      - app-network
+
+# 网络配置
+networks:
+  app-network:
+    driver: bridge
