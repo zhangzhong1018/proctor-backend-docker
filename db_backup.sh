@@ -1,16 +1,19 @@
 #!/bin/bash
 
-CONTAINER_NAME="proctor-backend_postgresql_1"
-DB_NAME="hmdm"
-DB_USER="hmdm"
-DB_PASSWORD="topsecret"
-
+if [ -f .env ]; then
+    set -a
+    source .env
+    set +a
+else
+    echo ".env no found"
+    exit 1
+fi
 
 mkdir -p db_backups
 BACKUP_FILE="db_backups/backup_$(date +%Y%m%d_%H%M%S).sql"
 
-export PGPASSWORD=$DB_PASSWORD
-docker exec $CONTAINER_NAME pg_dump -U $DB_USER $DB_NAME > $BACKUP_FILE
+export PGPASSWORD=$SQL_PASS
+docker exec $CONTAINER_NAME pg_dump -U $SQL_USER $SQL_BASE > $BACKUP_FILE
 
 if [ $? -eq 0 ]; then
     echo "Backup success: $BACKUP_FILE"

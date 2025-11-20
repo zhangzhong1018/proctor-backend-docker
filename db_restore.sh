@@ -1,9 +1,13 @@
 #!/bin/bash
 
-CONTAINER_NAME="proctor-backend_postgresql_1"
-DB_NAME="hmdm"
-DB_USER="hmdm"
-DB_PASSWORD="topsecret"
+if [ -f .env ]; then
+    set -a
+    source .env
+    set +a
+else
+    echo ".env no found"
+    exit 1
+fi
 
 
 if [ -z "$1" ]; then
@@ -25,7 +29,7 @@ fi
 
 echo "..."
 echo "backup file: $BACKUP_FILE"
-echo "backup db: $DB_NAME"
+echo "backup db: $SQL_BASE"
 echo ""
 
 read -p "This will overwrite existing data! Are you sure you want to continue? (y/N): " confirm
@@ -34,7 +38,7 @@ if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
     exit 0
 fi
 
-docker exec -i $CONTAINER_NAME psql -U $DB_USER $DB_NAME < $BACKUP_FILE
+docker exec -i $CONTAINER_NAME psql -U $SQL_USER $SQL_BASE < $BACKUP_FILE
 
 if [ $? -eq 0 ]; then
     echo "Restore successful!"
