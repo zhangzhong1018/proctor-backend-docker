@@ -36,7 +36,7 @@ services:
 
   # Tomcat 应用服务
   webapp:
-    image: zli1018/proctor-backend_docker:latest
+    image: ${IMAGE_NAME}:latest
     container_name: proctor-backend
     depends_on:
       postgresql:
